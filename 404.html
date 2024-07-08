@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>警告</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            color: red;
+        }
+        h1 {
+            font-weight: bold;
+        }
+        .countdown {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>警告</h1>
+    <p>您好！您进入了<a href="https://download.tech-bowen.com" target="_blank">https://download.tech-bowen.com</a>的错误界面，请进入正确的界面以获得更好的体验！</p>
+    
+    <div class="countdown">
+        页面将在 <span id="countdown">30</span> 秒后自动跳转...
+    </div>
+    
+    <script>
+        // Countdown timer
+        var seconds = 30;
+        function countdown() {
+            seconds--;
+            document.getElementById("countdown").textContent = seconds;
+            if (seconds <= 0) {
+                window.location.href = "https://download.tech-bowen.com";
+            }
+        }
+        setInterval(countdown, 1000);
+    </script>
+
+    <div>
+        <p>UTC时间： <span id="utc-time"></span></p>
+        <p>UTC+8时间： <span id="utc8-time"></span></p>
+        <p id="ip-info">IP地址检测中...</p>
+    </div>
+
+    <script>
+        // Get UTC and UTC+8 time
+        function updateTime() {
+            var now = new Date();
+            var utcTime = now.toISOString().slice(0, 19).replace('T', ' ');
+            document.getElementById("utc-time").textContent = utcTime + " UTC";
+            
+            var utc8Time = new Date(now.getTime() + (8 * 60 * 60 * 1000)).toISOString().slice(0, 19).replace('T', ' ');
+            document.getElementById("utc8-time").textContent = utc8Time + " UTC+8";
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // IP detection
+        fetch('https://api64.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                var ip = data.ip;
+                var location = "地区待检测"; // 可以使用其他服务获取地区信息
+                document.getElementById("ip-info").textContent = "您的IP地址：" + ip + "，所属地区：" + location;
+            })
+            .catch(error => {
+                console.error('IP检测失败', error);
+            });
+    </script>
+
+</body>
+</html>
