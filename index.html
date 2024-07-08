@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Bowen 主网</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('picture.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        #countdown {
+            font-size: 16px;
+            color: #f00;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+        #datetime, #ipinfo {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        #ipinfo {
+            margin-bottom: 40px;
+        }
+        .announcement {
+            background-color: #ffe066;
+            color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        @media (max-width: 600px) {
+            button {
+                width: 80%;
+                font-size: 16px;
+                margin: 10px auto;
+                display: block;
+            }
+        }
+        .copyright {
+            font-size: 14px;
+            color: #666;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>欢迎来到 Tech Bowen</h1>
+        <div id="datetime"></div>
+        <div id="ipinfo"></div>
+        <div class="announcement">
+            <strong>公告：</strong> 这里是您的公告内容，可以根据需要进行更新。
+        </div>
+        <button onclick="window.open('https://www.tech-bowen.com')">Bowen 官网</button>
+        <button onclick="window.open('https://blog.tech-bowen.com')">Bowen 博客</button>
+        <button onclick="checkPassword()">Bowen 下载网</button>
+        <button onclick="alert('暂未完善')">Bowen 游戏</button>
+        <button onclick="window.location.href='mailto:admin@tech-bowen.com'">发送邮件</button>
+        <div id="countdown">剩余时间：20:00</div>
+        <div class="copyright">© Tech-bowen管理组 2024 保留所有权利</div>
+    </div>
+
+    <script>
+        // 密码设置
+        const password = 'yourpassword'; // 在此设置密码
+
+        function checkPassword() {
+            const userPassword = prompt('请输入密码:');
+            if (userPassword === password) {
+                window.open('https://download.tech-bowen.com');
+            } else {
+                alert('密码错误');
+            }
+        }
+
+        // 强制刷新缓存
+        window.onload = () => {
+            if (!sessionStorage.getItem('reloaded')) {
+                sessionStorage.setItem('reloaded', 'true');
+                location.reload(true);
+            }
+        };
+
+        // 倒计时
+        let timeLeft = 1200;
+        const countdownElement = document.getElementById('countdown');
+        setInterval(() => {
+            if (timeLeft <= 0) {
+                window.location.href = 'https://blog.tech-bowen.com';
+            } else {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                countdownElement.textContent = `剩余时间：${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            }
+        }, 1000);
+
+        // 显示时间
+        function updateDateTime() {
+            const now = new Date();
+            const utcNow = new Date(now.toUTCString().slice(0, -4));
+            const utc8Now = new Date(utcNow.getTime() + 8 * 60 * 60 * 1000);
+
+            const formatDateTime = (date) => {
+                const yyyy = date.getFullYear();
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const dd = String(date.getDate()).padStart(2, '0');
+                const hh = String(date.getHours()).padStart(2, '0');
+                const min = String(date.getMinutes()).padStart(2, '0');
+                const ss = String(date.getSeconds()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+            };
+
+            document.getElementById('datetime').innerHTML = `
+                UTC 时间: ${formatDateTime(utcNow)}<br>
+                北京时间 (UTC+8): ${formatDateTime(utc8Now)}
+            `;
+        }
+
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        // IP地址和地区检测
+        async function fetchIPInfo() {
+            const ipInfo = document.getElementById('ipinfo');
+
+            try {
+                const response = await fetch('https://api64.ipify.org?format=json');
+                const data = await response.json();
+                const ip = data.ip;
+
+                const locationResponse = await fetch(`https://ipapi.co/${ip}/json/`);
+                const locationData = await locationResponse.json();
+
+                ipInfo.textContent = `IP地址: ${ip}, 地区: ${locationData.country_name} ${locationData.region} ${locationData.city}`;
+            } catch (error) {
+                console.error('IP信息获取失败', error);
+                ipInfo.textContent = 'IP地址和地区获取失败';
+            }
+        }
+
+        setInterval(fetchIPInfo, 1000);
+        fetchIPInfo();
+    </script>
+</body>
+</html>
