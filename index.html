@@ -15,9 +15,38 @@
             margin: 0;
             padding: 0;
         }
+        .header {
+            width: 100%;
+            background-color: rgba(41, 128, 185, 0.9);
+            padding: 10px 0;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            z-index: 1;
+        }
+        .marquee {
+            color: white;
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .marquee span {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 15s linear infinite;
+        }
+        @keyframes marquee {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
         .container {
             max-width: 1200px;
-            margin: 50px auto;
+            margin: 100px auto 50px; /* 增加顶部间距以避免内容被头部覆盖 */
             background-color: rgba(255, 255, 255, 0.9);
             padding: 20px;
             border-radius: 10px;
@@ -78,8 +107,14 @@
     </style>
 </head>
 <body>
+    <div class="header">
+        <div class="marquee">
+            <span>正在使用Tech-bowen的在线字幕服务   Using Tech brown's online subtitle service</span>
+        </div>
+    </div>
+
     <div class="container">
-        <h1>欢迎来到 Tech Bowen</h1>
+        <h1>欢迎来到 Tech Bowen 主网</h1>
         <div id="datetime"></div>
         <div id="ipinfo"></div>
         <div class="announcement">
@@ -89,6 +124,7 @@
         <button onclick="window.open('https://blog.tech-bowen.com')">Bowen 博客</button>
         <button onclick="checkPassword()">Bowen 下载网</button>
         <button onclick="alert('暂未完善')">Bowen 游戏</button>
+        <button onclick="window.open('https://tools.tech-bowen.com')">Bowen 工具箱</button>
         <button onclick="window.location.href='mailto:admin@tech-bowen.com'">发送邮件</button>
         <div id="countdown">剩余时间：20:00</div>
         <div class="copyright">
