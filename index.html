@@ -14,7 +14,6 @@
             text-align: center;
             margin: 0;
             padding: 0;
-            display: none; /* 默认隐藏内容 */
         }
         .header {
             width: 100%;
@@ -114,7 +113,7 @@
         </div>
     </div>
 
-    <div class="container" id="content">
+    <div class="container">
         <h1>欢迎来到 Tech Bowen 主网</h1>
         <div id="datetime"></div>
         <div id="ipinfo"></div>
@@ -134,65 +133,7 @@
         </div>
     </div>
 
-    <script src="https://cdn.auth0.com/js/auth0/9.13/auth0.min.js"></script>
     <script>
-        // 初始化Auth0
-        const webAuth = new auth0.WebAuth({
-            domain: 'dev-n6b6cddo4jjtobao.us.auth0.com',
-            clientID: 'kHSnoSYbMgbOmFDJOmokwIqkxxtT2RFO',
-            redirectUri: window.location.href,
-            responseType: 'token id_token',
-            scope: 'openid profile email'
-        });
-
-        function login() {
-            webAuth.authorize();
-        }
-
-        function handleAuthentication() {
-            webAuth.parseHash((err, authResult) => {
-                if (authResult && authResult.accessToken && authResult.idToken) {
-                    setSession(authResult);
-                    document.body.style.display = 'block'; // 显示内容
-                } else if (err) {
-                    console.log(err);
-                    alert('登录失败');
-                }
-            });
-        }
-
-        function setSession(authResult) {
-            localStorage.setItem('access_token', authResult.accessToken);
-            localStorage.setItem('id_token', authResult.idToken);
-            localStorage.setItem('expires_at', JSON.stringify(
-                (authResult.expiresIn * 1000) + new Date().getTime()
-            ));
-        }
-
-        function logout() {
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('id_token');
-            localStorage.removeItem('expires_at');
-            webAuth.logout({
-                returnTo: window.location.origin
-            });
-            document.body.style.display = 'none'; // 隐藏内容
-        }
-
-        function isAuthenticated() {
-            const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
-            return new Date().getTime() < expiresAt;
-        }
-
-        window.onload = () => {
-            handleAuthentication();
-            if (isAuthenticated()) {
-                document.body.style.display = 'block'; // 显示内容
-            } else {
-                login();
-            }
-        };
-
         // 密码设置
         const password = 'bowen666'; // 在此设置密码
 
@@ -206,10 +147,12 @@
         }
 
         // 强制刷新缓存
-        if (!sessionStorage.getItem('reloaded')) {
-            sessionStorage.setItem('reloaded', 'true');
-            location.reload(true);
-        }
+        window.onload = () => {
+            if (!sessionStorage.getItem('reloaded')) {
+                sessionStorage.setItem('reloaded', 'true');
+                location.reload(true);
+            }
+        };
 
         // 倒计时
         let timeLeft = 1200;
